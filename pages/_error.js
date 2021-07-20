@@ -1,12 +1,17 @@
-import React, { Component } from "react";
-import Router from "next/router";
+import { Component } from 'react';
+import NotFound from '../components/NotFound';
 
-export default class _error extends Component {
-  componentDidMount = () => {
-    Router.push("/components");
-  };
+class Error extends Component {
+  static getInitialProps({ res, err }) {
+    const statusCode = res ? res.statusCode : err ? err.statusCode : null;
+    return { statusCode };
+  }
 
   render() {
-    return <div />;
+    return (
+      <>{this.props.statusCode && <NotFound code={this.props.statusCode} />}</>
+    );
   }
 }
+
+export default Error;

@@ -1,11 +1,22 @@
-const withPlugins = require("next-compose-plugins");
-const withImages = require("next-images");
-const webpack = require("webpack");
-const path = require("path");
+if (typeof require !== 'undefined') {
+  require.extensions['.less'] = file => {};
+}
 
-module.exports = withPlugins([[withImages]], {
-  webpack(config, options) {
-    config.resolve.modules.push(path.resolve("./"));
-    return config;
-  },
-});
+const withLess = require('@zeit/next-less'),
+  nextConfig = {
+    //target: 'serverless',
+    env: {
+      weatherApi: '',
+      mapBoxApi: ''
+    },
+    onDemandEntries: {
+      maxInactiveAge: 1000 * 60 * 60,
+      pagesBufferLength: 5
+    },
+    lessLoaderOptions: {
+      javascriptEnabled: true
+    },
+    webpack: config => config
+  };
+
+module.exports = withLess(nextConfig);

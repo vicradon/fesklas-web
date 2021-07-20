@@ -1,61 +1,13 @@
-import React from "react";
-// nodejs library that concatenates classes
-import classNames from "classnames";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import Head from 'next/head';
+import Overview from '../components/Overview';
 
-// @material-ui/icons
+const OverviewPage = () => (
+  <>
+    <Head>
+      <link rel="stylesheet" href="/static/react-vis.css" />
+    </Head>
+    <Overview />
+  </>
+);
 
-// core components
-import Header from "components/Header/Header.js";
-import Footer from "components/Footer/Footer.js";
-import GridContainer from "components/Grid/GridContainer.js";
-import GridItem from "components/Grid/GridItem.js";
-import Button from "components/CustomButtons/Button.js";
-import HeaderLinks from "components/Header/HeaderLinks.js";
-import Parallax from "components/Parallax/Parallax.js";
-
-import styles from "styles/jss/nextjs-material-kit/pages/landingPage.js";
-
-
-const dashboardRoutes = [];
-
-const useStyles = makeStyles(styles);
-
-export default function LandingPage(props) {
-  const classes = useStyles();
-  const { ...rest } = props;
-  return (
-    <div>
-      <Header
-        color="transparent"
-        routes={dashboardRoutes}
-        brand="Fesklas"
-        rightLinks={<HeaderLinks />}
-        fixed
-        changeColorOnScroll={{
-          height: 400,
-          color: "white",
-        }}
-        {...rest}
-      />
-      <Parallax filter responsive image="/img/landing-bg.jpg">
-        <div className={classes.container}>
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={6}>
-              <h1 className={classes.title}>Making the world cleaner, one customer at a time.</h1>
-              <h4>
-                Fesklas is a waste management company with the vision of solving the waste crisis in Africa. 
-                Our goal is to make management the new normal.
-              </h4>
-              <br />
-              
-            </GridItem>
-          </GridContainer>
-        </div>
-      </Parallax>
-      
-      <Footer />
-    </div>
-  );
-}
+export default OverviewPage;

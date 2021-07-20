@@ -1,91 +1,70 @@
-/*!
+import '../assets/styles.less';
 
-=========================================================
-* NextJS Material Kit v1.2.0 based on Material Kit Free - v2.0.2 (Bootstrap 4.0.0 Final Edition) and Material Kit React v1.8.0
-=========================================================
+import App, { Container } from 'next/app';
 
-* Product Page: https://www.creative-tim.com/product/nextjs-material-kit
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/nextjs-material-kit/blob/main/LICENSE.md)
+import AppProvider from '../components/shared/AppProvider';
+import { GlobalStyles } from '../components/styles/GlobalStyles';
+import Head from 'next/head';
+import NProgress from 'nprogress';
+import Page from '../components/Page';
+import Router from 'next/router';
 
-* Coded by Creative Tim
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
 
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "next/app";
-import Head from "next/head";
-import Router from "next/router";
-
-import PageChange from "components/PageChange/PageChange.js";
-
-import "styles/scss/nextjs-material-kit.scss?v=1.2.0";
-
-Router.events.on("routeChangeStart", (url) => {
-  console.log(`Loading: ${url}`);
-  document.body.classList.add("body-page-transition");
-  ReactDOM.render(
-    <PageChange path={url} />,
-    document.getElementById("page-transition")
-  );
-});
-Router.events.on("routeChangeComplete", () => {
-  ReactDOM.unmountComponentAtNode(document.getElementById("page-transition"));
-  document.body.classList.remove("body-page-transition");
-});
-Router.events.on("routeChangeError", () => {
-  ReactDOM.unmountComponentAtNode(document.getElementById("page-transition"));
-  document.body.classList.remove("body-page-transition");
-});
-
-export default class MyApp extends App {
-  componentDidMount() {
-    let comment = document.createComment(`
-
-=========================================================
-* NextJS Material Kit v1.2.0 based on Material Kit Free - v2.0.2 (Bootstrap 4.0.0 Final Edition) and Material Kit React v1.8.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/nextjs-material-kit
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/nextjs-material-kit/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-`);
-    document.insertBefore(comment, document.documentElement);
-  }
-  static async getInitialProps({ Component, router, ctx }) {
+class MyApp extends App {
+  static async getInitialProps({ Component, ctx, req }) {
     let pageProps = {};
+    const userAgent = ctx.req
+      ? ctx.req.headers['user-agent']
+      : navigator.userAgent;
+
+    let ie = false;
+    if (userAgent.match(/Edge/i) || userAgent.match(/Trident.*rv[ :]*11\./i)) {
+      ie = true;
+    }
 
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);
     }
 
+    pageProps.query = ctx.query;
+    pageProps.ieBrowser = ie;
     return { pageProps };
   }
+
   render() {
     const { Component, pageProps } = this.props;
 
     return (
-      <React.Fragment>
+      <Container>
+        <GlobalStyles />
         <Head>
           <meta
             name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width,height=device-height"
           />
-          <title>NextJS Material Kit by Creative Tim</title>
+          <meta charSet="utf-8" />
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+          <link rel="shortcut icon" href="/static/images/triangle.png" />
+          <title>One - React Next.js Ant Design Dashboard</title>
+          <link
+            href="https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700"
+            rel="stylesheet"
+          />
+          {pageProps.ieBrowser && (
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.2.5/polyfill.min.js" />
+          )}
         </Head>
-        <Component {...pageProps} />
-      </React.Fragment>
+        <AppProvider>
+          <Page>
+            <Component {...pageProps} />
+          </Page>
+        </AppProvider>
+      </Container>
     );
   }
 }
+
+export default MyApp;
